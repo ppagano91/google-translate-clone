@@ -1,0 +1,2 @@
+TODO:
+- Crear cuenta de OpenAI para probar la aplicación
