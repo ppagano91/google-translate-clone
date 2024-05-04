@@ -1,12 +1,15 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
+import {useEffect} from 'react'
 import { useStore } from './hooks/useStore'
+import { useDebounce } from './hooks/useDebounce'
 import {Container, Row, Col, Button, Stack} from 'react-bootstrap'
 import { AUTO_LANGUAGE } from './utils/consts'
 import { ArrowIcon } from './components/Icons'
 import LanguageSelector from './components/LanguageSelector'
 import { SectionType } from './types/types.d'
 import { TextArea } from './components/TextArea'
+import { translate } from './services/translate'
 
 
 function App() {
@@ -22,6 +25,20 @@ function App() {
     setResult
   } = useStore()
 
+  const debouncedFromText = useDebounce(fromText, 1000)
+
+  useEffect(() => {
+    if (debouncedFromText == '') return
+    translate({fromLanguage,toLanguage,text:debouncedFromText})
+    .then((result)=> {      
+      if (result==null) return
+      setResult(result)
+    })
+    .catch((e)=>console.error(e))
+  
+    
+  }, [debouncedFromText, fromLanguage, toLanguage])
+  
   return (
     <>
       <Container fluid>
